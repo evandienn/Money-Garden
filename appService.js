@@ -91,6 +91,15 @@ async function fetchGardenersFromDb() {
     });
 }
 
+async function fetchSeasonsFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT name, start_date, end_date, theme_rule FROM Season');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 async function initiateGreenhouseDB() {
     return await withOracleDB(async (connection) => {
         const statements = [
@@ -275,5 +284,6 @@ async function initiateGreenhouseDB() {
 module.exports = {
     testOracleConnection,
     fetchGardenersFromDb,
+    fetchSeasonsFromDb,
     initiateGreenhouseDB
 };

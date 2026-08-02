@@ -17,6 +17,11 @@ router.get('/gardeners', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/seasons', async (req, res) => {
+    const tableContent = await appService.fetchSeasonsFromDb();
+    res.json({data: tableContent});
+});
+
 router.post("/initiate-db", async (req, res) => {
     const initiateResult = await appService.initiateGreenhouseDB();
     if (initiateResult) {

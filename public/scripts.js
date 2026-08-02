@@ -54,6 +54,33 @@ async function fetchAndDisplayGardeners() {
     });
 }
 
+async function fetchAndDisplay(idElementDisplay, toFetch) {
+    const tableElement = document.getElementById(idElementDisplay);
+    const tableBody = tableElement.querySelector('tbody');
+
+    const response = await fetch(toFetch, { method: 'GET' });
+    const responseData = await response.json();
+    const tableContent = responseData.data;
+
+    if (tableBody) {
+        tableBody.innerHTML = '';
+    }
+
+    tableContent.forEach(user => {
+        const row = tableBody.insertRow();
+        user.forEach((field, index) => {
+            const cell = row.insertCell(index);
+            // Format dates slightly nicer if it's the join_date column
+            cell.textContent = index === 3 ? new Date(field).toLocaleDateString() : field;
+        });
+    });
+}
+
+function fetchAndDisplayAllTables() {
+    fetchAndDisplay("gardenerTable", "gardeners");
+    fetchAndDisplay("seasonTable", "seasons");
+}
+
 async function resetDatabase() {
     const response = await fetch("/initiate-db", { method: 'POST' });
     const responseData = await response.json();
@@ -61,7 +88,7 @@ async function resetDatabase() {
     if (responseData.success) {
         const messageElement = document.getElementById('resetResultMsg');
         messageElement.textContent = "Greenhouse database initiated successfully!";
-        fetchAndDisplayGardeners();
+        fetchAndDisplayAllTables();
     } else {
         alert("Error initiating database!");
     }
@@ -69,6 +96,6 @@ async function resetDatabase() {
 
 window.onload = function() {
     checkDbConnection();
-    fetchAndDisplayGardeners();
+    fetchAndDisplayAllTables();
     document.getElementById("resetDBButton").addEventListener("click", resetDatabase);
 };
