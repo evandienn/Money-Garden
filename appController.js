@@ -13,12 +13,12 @@ router.get('/check-db-connection', async (req, res) => {
 });
 
 router.get('/gardeners', async (req, res) => {
-    const tableContent = await appService.fetchGardenersFromDb();
+    const tableContent = await appService.fetchFromDb('SELECT gardener_id, display_name, email, join_date, timezone FROM Gardener');
     res.json({data: tableContent});
 });
 
 router.get('/seasons', async (req, res) => {
-    const tableContent = await appService.fetchSeasonsFromDb();
+    const tableContent = await appService.fetchFromDb('SELECT name, start_date, end_date, theme_rule FROM Season');
     res.json({data: tableContent});
 });
 

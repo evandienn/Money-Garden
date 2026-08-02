@@ -82,18 +82,9 @@ async function testOracleConnection() {
 // GREENHOUSE SPECIFIC FUNCTIONS
 // ----------------------------------------------------------
 
-async function fetchGardenersFromDb() {
+async function fetchFromDb(command) {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT gardener_id, display_name, email, join_date, timezone FROM Gardener');
-        return result.rows;
-    }).catch(() => {
-        return [];
-    });
-}
-
-async function fetchSeasonsFromDb() {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT name, start_date, end_date, theme_rule FROM Season');
+        const result = await connection.execute(command);
         return result.rows;
     }).catch(() => {
         return [];
@@ -283,7 +274,6 @@ async function initiateGreenhouseDB() {
 
 module.exports = {
     testOracleConnection,
-    fetchGardenersFromDb,
-    fetchSeasonsFromDb,
+    fetchFromDb,
     initiateGreenhouseDB
 };
