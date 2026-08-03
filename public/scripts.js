@@ -79,6 +79,19 @@ async function fetchAndDisplay(idElementDisplay, toFetch) {
 function fetchAndDisplayAllTables() {
     fetchAndDisplay("gardenerTable", "gardeners");
     fetchAndDisplay("seasonTable", "seasons");
+    fetchAndDisplay("gardenTable", "gardens");
+    fetchAndDisplay("spendingCategoryTable", "spending_categories");
+    fetchAndDisplay("plantSpeciesTable", "plant_species");
+    fetchAndDisplay("budgetPlanTable", "budget_plans");
+    fetchAndDisplay("lessonTable", "lessons");
+    fetchAndDisplay("currencyTable", "currencies");
+    fetchAndDisplay("transactionTable", "transactions");
+    fetchAndDisplay("expenseTable", "expenses");
+    fetchAndDisplay("incomeTable", "incomes");
+    fetchAndDisplay("dailySummaryTable", "daily_summaries");
+    fetchAndDisplay("containsPlantTable", "contains_plant");
+    fetchAndDisplay("completesLessonTable", "completes_lesson");
+    fetchAndDisplay("followsTable", "follows");
 }
 
 async function resetDatabase() {
