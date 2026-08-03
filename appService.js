@@ -249,6 +249,7 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('USD', 1.35)`,
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (1, 18.50, TO_DATE('07-01-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (1, 'McDonalds', 'Food')`,
+            `INSERT INTO Income (transaction_id, source_name, primary) VALUES (1, 'McDonalds', 1)`,
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-26-2026', 'MM-DD-YYYY'), 1, 5)`,
             `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (1, 'Tomato')`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 1)`,
