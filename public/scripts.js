@@ -111,4 +111,7 @@ window.onload = function() {
     checkDbConnection();
     fetchAndDisplayAllTables();
     document.getElementById("resetDBButton").addEventListener("click", resetDatabase);
+    /*if (btn) {
+        btn.addEventListener("click", resetDatabase);
+    }*/
 };
