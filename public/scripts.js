@@ -32,7 +32,7 @@ async function checkDbConnection() {
     });
 }
 
-async function fetchAndDisplayGardeners() {
+/*async function fetchAndDisplayGardeners() {
     const tableElement = document.getElementById('gardenerTable');
     const tableBody = tableElement.querySelector('tbody');
 
@@ -52,7 +52,7 @@ async function fetchAndDisplayGardeners() {
             cell.textContent = index === 3 ? new Date(field).toLocaleDateString() : field;
         });
     });
-}
+}*/
 
 async function fetchAndDisplay(idElementDisplay, toFetch) {
     const tableElement = document.getElementById(idElementDisplay);
@@ -107,10 +107,40 @@ async function resetDatabase() {
     }
 }
 
+async function insertInDatabase() {
+    /*const response = await fetch("/initiate-db", { method: 'POST' });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetResultMsg');
+        messageElement.textContent = "Greenhouse database initiated successfully!";
+        fetchAndDisplayAllTables();
+    } else {
+        alert("Error initiating database!");
+    }*/
+   // TODO
+}
+
+async function countTuplesInDatabase() {
+    /*const response = await fetch("/initiate-db", { method: 'POST' });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('resetResultMsg');
+        messageElement.textContent = "Greenhouse database initiated successfully!";
+        fetchAndDisplayAllTables();
+    } else {
+        alert("Error initiating database!");
+    }*/
+   // TODO
+}
+
 window.onload = function() {
     checkDbConnection();
     fetchAndDisplayAllTables();
     document.getElementById("resetDBButton").addEventListener("click", resetDatabase);
+    //document.getElementById("insertInDBForm").addEventListener("click", insertInDatabase);
+    //document.getElementById("countTuplesInDBForm").addEventListener("click", countTuplesInDatabase);
     /*if (btn) {
         btn.addEventListener("click", resetDatabase);
     }*/

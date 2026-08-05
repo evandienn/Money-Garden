@@ -96,4 +96,8 @@ router.post("/initiate-db", async (req, res) => {
     }
 });
 
+router.post("/insert", async (req, res) => {
+    // TODO
+});
+
 module.exports = router;
