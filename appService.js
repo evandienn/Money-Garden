@@ -232,11 +232,11 @@ async function initiateGreenhouseDB() {
             )`,
 
             // 3. POPULATE DATA
-            /*`INSERT INTO Gardener (garden_id, display_name, email, join_date, timezone) VALUES (1, 'temp1', 'temp1@gmail.com', '07-30-2026', 'EST')`,
-            `INSERT INTO Gardener (garden_id, display_name, email, join_date, timezone) VALUES (2, 'temp2', 'temp2@gmail.com', '07-30-2026', 'PST')`,
-            `INSERT INTO Gardener (garden_id, display_name, email, join_date, timezone) VALUES (3, 'temp3', 'temp3@gmail.com', '07-30-2026', 'PST')`,
-            `INSERT INTO Gardener (garden_id, display_name, email, join_date, timezone) VALUES (4, 'temp4', 'temp4@gmail.com', '07-30-2026', 'CST')`,
-            `INSERT INTO Gardener (garden_id, display_name, email, join_date, timezone) VALUES (5, 'temp5', 'temp5@gmail.com', '07-30-2026', 'EST')`,
+            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (1, 'temp1', 'temp1@gmail.com', '30-07-2026', 'EST')`,
+            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (2, 'temp2', 'temp2@gmail.com', '07-30-2026', 'PST')`,
+            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (3, 'temp3', 'temp3@gmail.com', '07-30-2026', 'PST')`,
+            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (4, 'temp4', 'temp4@gmail.com', '07-30-2026', 'CST')`,
+            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (5, 'temp5', 'temp5@gmail.com', '07-30-2026', 'EST')`,
             `INSERT INTO Season (name, start_date, end_date, theme_rule) VALUES ('fall', '09-20-2025', '12-19-2025', 'need to maintain healthy plants for winter')`,
             `INSERT INTO Season (name, start_date, end_date, theme_rule) VALUES ('winter', '12-20-2025', '03-19-2026', 'garden moved to greenhouse')`,
             `INSERT INTO Season (name, start_date, end_date, theme_rule) VALUES ('spring', '03-20-2026', '06-19-2026', 'plants get a boost for money saved')`,
@@ -307,8 +307,8 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Follows (follower_id, followee_id) VALUES (3, 4)`,
             `INSERT INTO Follows (follower_id, followee_id) VALUES (4, 5)`,
             `INSERT INTO Follows (follower_id, followee_id) VALUES (5, 1)`
-*/
-            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (1, 'temp1', 'temp1@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'EST')`,
+
+            /*`INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (1, 'temp1', 'temp1@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'EST')`,
             `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (2, 'temp2', 'temp2@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'PST')`,
             `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (3, 'temp3', 'temp3@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'PST')`,
             `INSERT INTO Season (name, start_date, end_date, theme_rule) VALUES ('fall', TO_DATE('09-20-2025', 'MM-DD-YYYY'), TO_DATE('12-19-2025', 'MM-DD-YYYY'), 'need to maintain healthy plants for winter')`,
@@ -329,7 +329,7 @@ async function initiateGreenhouseDB() {
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-26-2026', 'MM-DD-YYYY'), 1, 5)`,
             `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (1, 'Tomato')`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 1)`,
-            `INSERT INTO Follows (follower_id, followee_id) VALUES (1, 2)`
+            `INSERT INTO Follows (follower_id, followee_id) VALUES (1, 2)`*/
         ];
 
         for (const sql of statements) {
