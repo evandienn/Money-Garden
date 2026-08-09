@@ -13,77 +13,77 @@ router.get('/check-db-connection', async (req, res) => {
 });
 
 router.get('/gardeners', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT gardener_id, display_name, email, join_date, timezone FROM Gardener');
+    const tableContent = await appService.fetchFromDb('gardeners');
     res.json({data: tableContent});
 });
 
 router.get('/seasons', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT name, start_date, end_date, theme_rule FROM Season');
+    const tableContent = await appService.fetchFromDb('seasons');
     res.json({data: tableContent});
 });
 
 router.get('/gardens', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT garden_id, theme, created_on, soil_quality, gardener_id, season_name FROM Garden');
+    const tableContent = await appService.fetchFromDb('gardens');
     res.json({data: tableContent});
 });
 
 router.get('/spending_categories', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT category_name, icon, is_essential, garden_id FROM SpendingCategory');
+    const tableContent = await appService.fetchFromDb('spending_categories');
     res.json({data: tableContent});
 });
 
 router.get('/plant_species', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT common_name, rarity, days_to_mature, drought_tolerance, category_name FROM PlantSpecies');
+    const tableContent = await appService.fetchFromDb('plant_species');
     res.json({data: tableContent});
 });
 
 router.get('/budget_plans', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT plan_id, effective_date, daily_cap, generated_by_rule, category_name FROM SpendingCategory');
+    const tableContent = await appService.fetchFromDb('budget_plans');
     res.json({data: tableContent});
 });
 
 router.get('/lessons', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT lesson_id, title, topic, difficulty, est_minutes FROM Lesson');
+    const tableContent = await appService.fetchFromDb('lessons');
     res.json({data: tableContent});
 });
 
 router.get('/currencies', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT currency_code, exchange_rate FROM Currency');
+    const tableContent = await appService.fetchFromDb('currencies');
     res.json({data: tableContent});
 });
 
 router.get('/transactions', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT transaction_id, amount, transaction_date, category_name, currency_code FROM Transaction');
+    const tableContent = await appService.fetchFromDb('transactions');
     res.json({data: tableContent});
 });
 
 router.get('/expenses', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT transaction_id, merchant_name, asset FROM Expense');
+    const tableContent = await appService.fetchFromDb('expenses');
     res.json({data: tableContent});
 });
 
 router.get('/incomes', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT transaction_id, source_name, primary FROM Income');
+    const tableContent = await appService.fetchFromDb('incomes');
     res.json({data: tableContent});
 });
 
 router.get('/daily_summaries', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT log_date, gardener_id, streak_count FROM DailySummary');
+    const tableContent = await appService.fetchFromDb('daily_summaries');
     res.json({data: tableContent});
 });
 
 router.get('/contains_plant', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT garden_id, common_name FROM Contains_Plant');
+    const tableContent = await appService.fetchFromDb('contains_plant');
     res.json({data: tableContent});
 });
 
 router.get('/completes_lesson', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT gardener_id, lesson_id FROM Completes_Lesson');
+    const tableContent = await appService.fetchFromDb('completes_lesson');
     res.json({data: tableContent});
 });
 
 router.get('/follows', async (req, res) => {
-    const tableContent = await appService.fetchFromDb('SELECT follower_id, followee_id FROM Follows');
+    const tableContent = await appService.fetchFromDb('follows');
     res.json({data: tableContent});
 });
 

@@ -82,8 +82,58 @@ async function testOracleConnection() {
 // GREENHOUSE SPECIFIC FUNCTIONS
 // ----------------------------------------------------------
 
-async function fetchFromDb(command) {
+async function fetchFromDb(table) {
     return await withOracleDB(async (connection) => {
+        let command = '';
+        switch(table) {
+            case 'gardeners':
+                command = 'SELECT gardener_id, display_name, email, join_date, timezone FROM Gardener';
+                break;
+            case 'seasons':
+                command = 'SELECT name, start_date, end_date, theme_rule FROM Season';
+                break;
+            case 'gardens':
+                command = 'SELECT garden_id, theme, created_on, soil_quality, gardener_id, season_name FROM Garden';
+                break;
+            case 'spending_categories':
+                command = 'SELECT category_name, icon, is_essential, garden_id FROM SpendingCategory';
+                break;
+            case 'plant_species':
+                command = 'SELECT common_name, rarity, days_to_mature, drought_tolerance, category_name FROM PlantSpecies';
+                break;
+            case 'budget_plans':
+                command = 'SELECT plan_id, effective_date, daily_cap, generated_by_rule, category_name FROM SpendingCategory';
+                break;
+            case 'lessons':
+                command = 'SELECT lesson_id, title, topic, difficulty, est_minutes FROM Lesson';
+                break;
+            case 'currencies':
+                command = 'SELECT currency_code, exchange_rate FROM Currency';
+                break;
+            case 'transactions':
+                command = 'SELECT transaction_id, amount, transaction_date, category_name, currency_code FROM Transaction';
+                break;
+            case 'expenses':
+                command = 'SELECT transaction_id, merchant_name, asset FROM Expense';
+                break;
+            case 'incomes':
+                command = 'SELECT transaction_id, source_name, primary FROM Income';
+                break;
+            case 'daily_summaries':
+                command = 'SELECT log_date, gardener_id, streak_count FROM DailySummary';
+                break;
+            case 'contains_plant':
+                command = 'SELECT garden_id, common_name FROM Contains_Plant';
+                break;
+            case 'completes_lesson':
+                command = 'SELECT gardener_id, lesson_id FROM Completes_Lesson';
+                break;
+            case 'follows':
+                command = 'SELECT follower_id, followee_id FROM Follows';
+                break;
+            default:
+                break;
+        }
         const result = await connection.execute(command);
         return result.rows;
     }).catch(() => {
