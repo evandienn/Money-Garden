@@ -26,6 +26,20 @@
 
     <!-- Show 'Demotable'. 
         Data will be fetched and inserted here dynamically using JavaScript. -->
+    <!-- 
+        Adding select option to preview tables
+    -->
+    <select id= "previewTables" onchange="handleSelection(this.value)">
+        <option value=""> -- Select an option -- </option>
+        <option value="gardens"> garden</option>
+        <option value="gardeners"> gardners</option>
+
+        <option value="seasons"> seasons</option>
+
+    </select>
+
+
+
     <h2>View Gardener TEST</h2>
     <table id="gardenerTable" border="1">
         <thead>

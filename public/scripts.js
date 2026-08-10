@@ -110,5 +110,6 @@ async function resetDatabase() {
 window.onload = function() {
     checkDbConnection();
     fetchAndDisplayAllTables();
+    document.getElementById("previewTables").addEventListner()
     document.getElementById("resetDBButton").addEventListener("click", resetDatabase);
 };

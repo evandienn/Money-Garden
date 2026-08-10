@@ -36,7 +36,7 @@ ORACLE_DBNAME=stu
 Open the `remote-start.sh` script and set your team number:
 
 ```bash
-TEAM_NUMBER=... # Replace ... with your actual team number here
+TEAM_NUMBER= 33
 ```
 
 ### 3. Run the Application
