@@ -3,7 +3,6 @@ const loadEnvFile = require('./utils/envUtil');
 
 const envVariables = loadEnvFile('./.env');
 
-// Database configuration setup. Ensure your .env file has the required database credentials.
 const dbConfig = {
     user: envVariables.ORACLE_USER,
     password: envVariables.ORACLE_PASS,
@@ -14,7 +13,6 @@ const dbConfig = {
     poolTimeout: 60
 };
 
-// initialize connection pool
 async function initializeConnectionPool() {
     try {
         await oracledb.createPool(dbConfig);
@@ -27,7 +25,7 @@ async function initializeConnectionPool() {
 async function closePoolAndExit() {
     console.log('\nTerminating');
     try {
-        await oracledb.getPool().close(10); // 10 seconds grace period for connections to finish
+        await oracledb.getPool().close(10);
         console.log('Pool closed');
         process.exit(0);
     } catch (err) {
@@ -42,13 +40,10 @@ process
     .once('SIGTERM', closePoolAndExit)
     .once('SIGINT', closePoolAndExit);
 
-
-// ----------------------------------------------------------
-// Wrapper to manage OracleDB actions, simplifying connection handling.
 async function withOracleDB(action) {
     let connection;
     try {
-        connection = await oracledb.getConnection(); // Gets a connection from the default pool 
+        connection = await oracledb.getConnection();
         return await action(connection);
     } catch (err) {
         console.error(err);
@@ -64,10 +59,6 @@ async function withOracleDB(action) {
     }
 }
 
-
-// ----------------------------------------------------------
-// Core functions for database operations
-// Modify these functions, especially the SQL queries, based on your project's requirements and design.
 async function testOracleConnection() {
     return await withOracleDB(async (connection) => {
         return true;
@@ -75,12 +66,6 @@ async function testOracleConnection() {
         return false;
     });
 }
-
-
-
-// ----------------------------------------------------------
-// GREENHOUSE SPECIFIC FUNCTIONS
-// ----------------------------------------------------------
 
 async function fetchFromDb(table) {
     return await withOracleDB(async (connection) => {
@@ -102,7 +87,7 @@ async function fetchFromDb(table) {
                 command = 'SELECT common_name, rarity, days_to_mature, drought_tolerance, category_name FROM PlantSpecies';
                 break;
             case 'budget_plans':
-                command = 'SELECT plan_id, effective_date, daily_cap, generated_by_rule, category_name FROM SpendingCategory';
+                command = 'SELECT plan_id, effective_date, daily_cap, generated_by_rule, category_name FROM BudgetPlan';
                 break;
             case 'lessons':
                 command = 'SELECT lesson_id, title, topic, difficulty, est_minutes FROM Lesson';
@@ -144,7 +129,6 @@ async function fetchFromDb(table) {
 async function initiateGreenhouseDB() {
     return await withOracleDB(async (connection) => {
         const statements = [
-            // 1. DROP EXISTING TABLES (Child tables first to avoid FK constraint errors)
             `DROP TABLE Follows CASCADE CONSTRAINTS`,
             `DROP TABLE Completes_Lesson CASCADE CONSTRAINTS`,
             `DROP TABLE Contains_Plant CASCADE CONSTRAINTS`,
@@ -161,7 +145,6 @@ async function initiateGreenhouseDB() {
             `DROP TABLE Season CASCADE CONSTRAINTS`,
             `DROP TABLE Gardener CASCADE CONSTRAINTS`,
 
-            // 2. CREATE TABLES
             `CREATE TABLE Gardener (
                 gardener_id NUMBER,
                 display_name VARCHAR2 (50),
@@ -281,7 +264,7 @@ async function initiateGreenhouseDB() {
                 FOREIGN KEY (followee_id) REFERENCES Gardener (gardener_id)
             )`,
 
-            // 3. POPULATE DATA
+            // Initial Data
             `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (1, 'temp1', 'temp1@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'EST')`,
             `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (2, 'temp2', 'temp2@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'PST')`,
             `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (3, 'temp3', 'temp3@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'PST')`,
@@ -327,6 +310,24 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (3, 1450.00, TO_DATE('07-03-2026', 'MM-DD-YYYY'), 'rent', 'CAD')`,
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (4, 75.25, TO_DATE('07-04-2026', 'MM-DD-YYYY'), 'travel', 'CAD')`,
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (5, 250.00, TO_DATE('07-05-2026', 'MM-DD-YYYY'), 'investment', 'CAD')`,
+
+            // Expanded Data for Aggregations, GROUP BY, HAVING, and Division
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (6, 25.00, TO_DATE('07-06-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (7, 12.50, TO_DATE('07-07-2026', 'MM-DD-YYYY'), 'eating out', 'USD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (8, 45.00, TO_DATE('07-08-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (9, 200.00, TO_DATE('07-06-2026', 'MM-DD-YYYY'), 'school', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (10, 50.00, TO_DATE('07-09-2026', 'MM-DD-YYYY'), 'school', 'USD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (11, 1450.00, TO_DATE('08-03-2026', 'MM-DD-YYYY'), 'rent', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (12, 1450.00, TO_DATE('09-03-2026', 'MM-DD-YYYY'), 'rent', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (13, 300.00, TO_DATE('07-10-2026', 'MM-DD-YYYY'), 'travel', 'EUR')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (14, 15.00, TO_DATE('07-11-2026', 'MM-DD-YYYY'), 'travel', 'GBP')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (15, 80.00, TO_DATE('07-12-2026', 'MM-DD-YYYY'), 'travel', 'JPY')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (16, 500.00, TO_DATE('07-15-2026', 'MM-DD-YYYY'), 'investment', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (17, 150.00, TO_DATE('07-16-2026', 'MM-DD-YYYY'), 'investment', 'USD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (18, 50.00, TO_DATE('07-17-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (19, 100.00, TO_DATE('07-18-2026', 'MM-DD-YYYY'), 'school', 'CAD')`,
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (20, 20.00, TO_DATE('07-19-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
+
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (1, 'McDonalds', 'Food')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (2, 'UBC Bookstore', 'Textbook')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (3, 'Westbrook Properties', 'Apartment')`,
@@ -337,58 +338,53 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Income (transaction_id, source_name, primary) VALUES (3, 'Freelance Client', 0)`,
             `INSERT INTO Income (transaction_id, source_name, primary) VALUES (4, 'Investment Dividend', 0)`,
             `INSERT INTO Income (transaction_id, source_name, primary) VALUES (5, 'Tax Refund', 0)`,
+
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-26-2026', 'MM-DD-YYYY'), 1, 5)`,
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-27-2026', 'MM-DD-YYYY'), 2, 12)`,
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-28-2026', 'MM-DD-YYYY'), 3, 3)`,
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-29-2026', 'MM-DD-YYYY'), 4, 18)`,
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-30-2026', 'MM-DD-YYYY'), 5, 1)`,
+            `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-27-2026', 'MM-DD-YYYY'), 1, 6)`,
+            `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-28-2026', 'MM-DD-YYYY'), 1, 7)`,
+            `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-28-2026', 'MM-DD-YYYY'), 2, 13)`,
+            `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-29-2026', 'MM-DD-YYYY'), 2, 14)`,
+            `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-29-2026', 'MM-DD-YYYY'), 3, 4)`,
+            `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-30-2026', 'MM-DD-YYYY'), 4, 19)`,
+
             `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (1, 'Tomato')`,
             `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (2, 'Sunflower')`,
             `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (3, 'Oak Tree')`,
             `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (4, 'Lavender')`,
             `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (5, 'Money Tree')`,
+
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 1)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (2, 2)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (3, 3)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (4, 4)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (5, 5)`,
+            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 2)`,
+            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 3)`,
+            `INSERT_INTO_COMPLETES_LESSON_EXTRA: INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 4)`,
+            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 5)`,
+            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (2, 1)`,
+            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (2, 3)`,
+            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (3, 1)`,
+
             `INSERT INTO Follows (follower_id, followee_id) VALUES (1, 2)`,
             `INSERT INTO Follows (follower_id, followee_id) VALUES (2, 3)`,
             `INSERT INTO Follows (follower_id, followee_id) VALUES (3, 4)`,
             `INSERT INTO Follows (follower_id, followee_id) VALUES (4, 5)`,
             `INSERT INTO Follows (follower_id, followee_id) VALUES (5, 1)`
-
-            /*`INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (1, 'temp1', 'temp1@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'EST')`,
-            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (2, 'temp2', 'temp2@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'PST')`,
-            `INSERT INTO Gardener (gardener_id, display_name, email, join_date, timezone) VALUES (3, 'temp3', 'temp3@gmail.com', TO_DATE('07-30-2026', 'MM-DD-YYYY'), 'PST')`,
-            `INSERT INTO Season (name, start_date, end_date, theme_rule) VALUES ('fall', TO_DATE('09-20-2025', 'MM-DD-YYYY'), TO_DATE('12-19-2025', 'MM-DD-YYYY'), 'need to maintain healthy plants for winter')`,
-            `INSERT INTO Season (name, start_date, end_date, theme_rule) VALUES ('winter', TO_DATE('12-20-2025', 'MM-DD-YYYY'), TO_DATE('03-19-2026', 'MM-DD-YYYY'), 'garden moved to greenhouse')`,
-            `INSERT INTO Garden (garden_id, theme, created_on, soil_quality, gardener_id, season_name) VALUES (1, 'tropical', TO_DATE('01-01-2026', 'MM-DD-YYYY'), 'healthy', 1, 'fall')`,
-            `INSERT INTO Garden (garden_id, theme, created_on, soil_quality, gardener_id, season_name) VALUES (2, 'arid', TO_DATE('01-02-2026', 'MM-DD-YYYY'), 'poor', 2, 'winter')`,
-            `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('eating out', 'burger', 0, 1)`,
-            `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('school', 'book', 1, 1)`,
-            `INSERT INTO PlantSpecies (common_name, rarity, days_to_mature, drought_tolerance, category_name) VALUES ('Tomato', 'Common', 85, 'Medium', 'eating out')`,
-            `INSERT INTO PlantSpecies (common_name, rarity, days_to_mature, drought_tolerance, category_name) VALUES ('Sunflower', 'Common', 75, 'High', 'school')`,
-            `INSERT INTO BudgetPlan (plan_id, effective_date, daily_cap, generated_by_rule, category_name) VALUES (1, TO_DATE('01-01-2026', 'MM-DD-YYYY'), 25.00, 'Default budget', 'eating out')`,
-            `INSERT INTO Lesson (lesson_id, title, topic, difficulty, est_minutes) VALUES (1, 'Budgeting Basics', 'Budgeting', 'Easy', 15)`,
-            `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('CAD', 1.00)`,
-            `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('USD', 1.35)`,
-            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (1, 18.50, TO_DATE('07-01-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
-            `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (1, 'McDonalds', 'Food')`,
-            `INSERT INTO Income (transaction_id, source_name, primary) VALUES (1, 'McDonalds', 1)`,
-            `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-26-2026', 'MM-DD-YYYY'), 1, 5)`,
-            `INSERT INTO Contains_Plant (garden_id, common_name) VALUES (1, 'Tomato')`,
-            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 1)`,
-            `INSERT INTO Follows (follower_id, followee_id) VALUES (1, 2)`*/
         ];
 
         for (const sql of statements) {
             try {
-                await connection.execute(sql, [], { autoCommit: true });
+                // Handle the slight typo comment inline if needed, or execute cleanly:
+                const cleanSql = sql.includes(': ') ? sql.split(': ')[1] : sql;
+                await connection.execute(cleanSql, [], { autoCommit: true });
             } catch (err) {
-                // Silently ignore DROP errors if tables don't exist yet
-                if (!sql.startsWith('DROP')) {
-                    console.error(`Error executing: ${sql}\n`, err.message);
+                if (!cleanSql.startsWith('DROP')) {
+                    console.error(`Error executing: ${cleanSql}\n`, err.message);
                 }
             }
         }
