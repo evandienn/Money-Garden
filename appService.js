@@ -120,9 +120,13 @@ async function fetchFromDb(table) {
                 break;
         }
         const result = await connection.execute(command);
-        return result.rows;
-    }).catch(() => {
-        return [];
+        return {
+            rows: result.rows,
+            columns: result.metaData.map(col => col.name)
+        };
+    }).catch((err) => {
+        console.error(`Error executing: ${command}\n`, err.message);
+        return { rows: [], columns: [] };
     });
 }
 
@@ -231,7 +235,7 @@ async function initiateGreenhouseDB() {
             `CREATE TABLE Income (
                 transaction_id NUMBER,
                 source_name VARCHAR2(100),
-                primary NUMBER(1),
+                is_primary NUMBER(1),
                 PRIMARY KEY (transaction_id),
                 FOREIGN KEY (transaction_id) REFERENCES Transaction (transaction_id) ON DELETE CASCADE
             )`,
@@ -329,6 +333,7 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (20, 20.00, TO_DATE('07-19-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
 
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (1, 'McDonalds', 'Food')`,
+            `INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (1, 'McDonalds', 1)`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (2, 'UBC Bookstore', 'Textbook')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (3, 'Westbrook Properties', 'Apartment')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (4, 'Air Canada', 'Flight')`,

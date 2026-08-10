@@ -13,224 +13,42 @@
 
     <br><hr><br>
 
-    <h2>View Gardener TEST</h2>
-    <table id="gardenerTable" border="1">
-        <thead>
-            <tr>
-                <th>gardener_id</th>
-                <th>display_name</th>
-                <th>email</th>
-                <th>join_date</th>
-                <th>timezone</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <!-- Show 'Demotable'. 
+        Data will be fetched and inserted here dynamically using JavaScript. -->
+    <!-- 
+        Adding select option to preview tables
+    -->
+    <select id= "previewTables">
+        <option value=""> -- Select an option -- </option>
+        <option value="gardens"> garden</option>
+        <option value="gardeners"> gardeners</option>
+        <option value="plantSpecies"> plant species</option>
+        <option value="seasons"> seasons</option>
+        <option value="spendingCategory"> spending category</option>
+        <option value = "budgetPlan">budget plan</option>
+        <option value ="lesson">lessons</option>
+        <option value = "currency">currency</option>
+        <option value="transaction">transaction</option>
+        <option value="expense">expense</option>
+        <option value="income">income</option>
+        <option value="dailySummary"> daily summary</option>
+        <option value="containsPlant"> contains plant</option>
+        <option value="completesLesson"> completes lesson</option>
+        <option value="follows">follows</option>
+    </select>
 
-    <br><hr><br>
+    <h2 id="tableTitle">Select a table</h2>
 
-    <h2>View Season TEST</h2>
-    <table id="seasonTable" border="1">
-        <thead>
-            <tr>
-                <th>name</th>
-                <th>start_date</th>
-                <th>end_date</th>
-                <th>theme_rule</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <table id="previewTable">
+    <thead id="previewTableHead">
+    </thead>
 
-    <br><hr><br>
+    <tbody id="previewTableBody">
+    </tbody>
+</table>
 
-    <h2>View Garden TEST</h2>
-    <table id="gardenTable" border="1">
-        <thead>
-            <tr>
-                <th>garden_id</th>
-                <th>theme</th>
-                <th>created_on</th>
-                <th>soil_quality</th>
-                <th>gardener_id</th>
-                <th>season_name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 
-    <br><hr><br>
 
-    <h2>View SpendingCategory TEST</h2>
-    <table id="spendingCategoryTable" border="1">
-        <thead>
-            <tr>
-                <th>category_name</th>
-                <th>icon</th>
-                <th>is_essential</th>
-                <th>garden_id</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View PlantSpecies TEST</h2>
-    <table id="plantSpeciesTable" border="1">
-        <thead>
-            <tr>
-                <th>common_name</th>
-                <th>rarity</th>
-                <th>days_to_mature</th>
-                <th>drought_tolerance</th>
-                <th>category_name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Lesson TEST</h2>
-    <table id="lessonTable" border="1">
-        <thead>
-            <tr>
-                <th>lesson_id</th>
-                <th>title</th>
-                <th>topic</th>
-                <th>difficulty</th>
-                <th>est_minutes</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Currency TEST</h2>
-    <table id="currencyTable" border="1">
-        <thead>
-            <tr>
-                <th>currency_code</th>
-                <th>exchange_rate</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Transaction TEST (Expanded)</h2>
-    <table id="transactionTable" border="1">
-        <thead>
-            <tr>
-                <th>transaction_id</th>
-                <th>amount</th>
-                <th>transaction_date</th>
-                <th>category_name</th>
-                <th>currency_code</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Expense TEST</h2>
-    <table id="expenseTable" border="1">
-        <thead>
-            <tr>
-                <th>transaction_id</th>
-                <th>merchant_name</th>
-                <th>asset</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Income TEST</h2>
-    <table id="incomeTable" border="1">
-        <thead>
-            <tr>
-                <th>transaction_id</th>
-                <th>source_name</th>
-                <th>primary</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View DailySummary TEST</h2>
-    <table id="dailySummaryTable" border="1">
-        <thead>
-            <tr>
-                <th>log_date</th>
-                <th>gardener_id</th>
-                <th>streak_count</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Contains_Plant TEST</h2>
-    <table id="containsPlantTable" border="1">
-        <thead>
-            <tr>
-                <th>garden_id</th>
-                <th>common_name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Completes_Lesson TEST</h2>
-    <table id="completesLessonTable" border="1">
-        <thead>
-            <tr>
-                <th>gardener_id</th>
-                <th>lesson_id</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
-
-    <h2>View Follows TEST</h2>
-    <table id="followsTable" border="1">
-        <thead>
-            <tr>
-                <th>follower_id</th>
-                <th>followee_id</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br>
 
     <h2>Reset Database</h2>
     <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>

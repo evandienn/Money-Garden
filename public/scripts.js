@@ -31,49 +31,108 @@ async function checkDbConnection() {
     });
 }
 
-async function fetchAndDisplay(idElementDisplay, toFetch) {
-    const tableElement = document.getElementById(idElementDisplay);
-    const tableBody = tableElement.querySelector('tbody');
 
-    const response = await fetch(toFetch, { method: 'GET' });
+
+
+async function fetchAndDisplay(tableName) {
+    const response = await fetch(tableName, { method: 'GET' });
     const responseData = await response.json();
+
     const tableContent = responseData.data;
+    const columns = responseData.columns;
 
-    if (tableBody) {
-        tableBody.innerHTML = '';
-    }
+    const tableHead = document.getElementById("previewTableHead");
+    const tableBody = document.getElementById("previewTableBody");
+    const tableTitle = document.getElementById("tableTitle");
 
-    tableContent.forEach(user => {
-        const row = tableBody.insertRow();
-        user.forEach((field, index) => {
-            const cell = row.insertCell(index);
-            
-            // Safely check if the field is actually an ISO date string before formatting
-            if (field && typeof field === 'string' && field.includes('T00:00:00.000Z')) {
-                cell.textContent = field.split('T')[0];
-            } else {
-                cell.textContent = field;
-            }
+    tableHead.innerHTML = "";
+    tableBody.innerHTML = "";
+
+    tableTitle.textContent = `View ${tableName}`;
+
+
+    const headerRow = document.createElement("tr");
+
+    columns.forEach(column => {
+        const th = document.createElement("th");
+        th.textContent = column;
+        headerRow.appendChild(th);
+    });
+
+
+    tableHead.appendChild(headerRow);
+
+    // Create rows
+    tableContent.forEach(row => {
+        const tableRow = document.createElement("tr");
+
+        row.forEach(field => {
+            const cell = document.createElement("td");
+            cell.textContent = field;
+            tableRow.appendChild(cell);
         });
+
+        tableBody.appendChild(tableRow);
     });
 }
 
-function fetchAndDisplayAllTables() {
-    fetchAndDisplay("gardenerTable", "gardeners");
-    fetchAndDisplay("seasonTable", "seasons");
-    fetchAndDisplay("gardenTable", "gardens");
-    fetchAndDisplay("spendingCategoryTable", "spending_categories");
-    fetchAndDisplay("plantSpeciesTable", "plant_species");
-    fetchAndDisplay("budgetPlanTable", "budget_plans");
-    fetchAndDisplay("lessonTable", "lessons");
-    fetchAndDisplay("currencyTable", "currencies");
-    fetchAndDisplay("transactionTable", "transactions");
-    fetchAndDisplay("expenseTable", "expenses");
-    fetchAndDisplay("incomeTable", "incomes");
-    fetchAndDisplay("dailySummaryTable", "daily_summaries");
-    fetchAndDisplay("containsPlantTable", "contains_plant");
-    fetchAndDisplay("completesLessonTable", "completes_lesson");
-    fetchAndDisplay("followsTable", "follows");
+
+function setupDropdown() {
+    const dropdown = document.getElementById("previewTables");
+    dropdown.addEventListener("change", function() {
+        const selected = dropdown.value;
+        console.log("selected:", this.value);   // confirms the handler fires
+
+        switch(this.value) {
+            case "gardens":
+                fetchAndDisplay("gardens");
+                break
+            case "gardeners":
+                fetchAndDisplay("gardeners");
+                break
+            case "seasons":
+                fetchAndDisplay("seasons");
+                break
+            case "plantSpecies":
+                fetchAndDisplay("plant_species");
+                break
+            case "spendingCategory":
+                fetchAndDisplay("spending_categories");
+                break
+            case "budgetPlan":
+                fetchAndDisplay("budget_plans");
+                break
+            case "lesson":
+                fetchAndDisplay("lessons");
+                break
+            case "currency":
+                fetchAndDisplay("currencies");
+                break
+            case "transaction":
+                fetchAndDisplay("transactions");
+                break
+            case "expense":
+                fetchAndDisplay("expenses");
+                break
+            case "income":
+                fetchAndDisplay("incomes");
+                break
+            case "dailySummary":
+                fetchAndDisplay("daily_summaries");
+                break
+            case "containsPlant":
+                fetchAndDisplay("contains_plant");
+                break
+            case "completesLesson":
+                fetchAndDisplay("completes_lesson");
+                break
+            case "follows":
+                fetchAndDisplay("follows");
+                break
+
+        }
+
+    })
 }
 
 async function resetDatabase() {
@@ -83,11 +142,16 @@ async function resetDatabase() {
     if (responseData.success) {
         const messageElement = document.getElementById('resetResultMsg');
         messageElement.textContent = "Greenhouse database initiated successfully!";
-        fetchAndDisplayAllTables();
+
+        const dropdown = document.getElementById("previewTables");
+        if (dropdown.value) {
+            dropdown.dispatchEvent(new Event("change"));
+        }
     } else {
         alert("Error initiating database!");
     }
 }
+
 
 // -------------------------------------------------------------
 // NEW MILESTONE 4 QUERY LOGIC STARTING BELOW
@@ -275,8 +339,12 @@ async function handleDivision() {
 
 
 // --- WINDOW ONLOAD OVERRIDE ---
+
 window.onload = function() {
     checkDbConnection();
+    setupDropdown();
+    document.getElementById("resetDemotable").addEventListener("click", resetDatabase);
+
     fetchAndDisplayAllTables();
     document.getElementById("resetDBButton").addEventListener("click", resetDatabase);
     document.getElementById("loadGardenersButton").addEventListener("click", fetchAndDisplayAllTables);
