@@ -287,8 +287,8 @@ async function initiateGreenhouseDB() {
             `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('eating out', 'burger', 0, 1)`,
             `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('school', 'book', 1, 1)`,
             `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('rent', 'house', 1, 1)`,
-            `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('travel', 'plane', 0, 1)`,
-            `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('investment', 'bank', 0, 1)`,
+            `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('travel', 'plane', 0, 2)`,
+            `INSERT INTO SpendingCategory (category_name, icon, is_essential, garden_id) VALUES ('investment', 'chart', 0, 2)`,
             `INSERT INTO PlantSpecies (common_name, rarity, days_to_mature, drought_tolerance, category_name) VALUES ('Tomato', 'Common', 85, 'Medium', 'eating out')`,
             `INSERT INTO PlantSpecies (common_name, rarity, days_to_mature, drought_tolerance, category_name) VALUES ('Sunflower', 'Common', 75, 'High', 'school')`,
             `INSERT INTO PlantSpecies (common_name, rarity, days_to_mature, drought_tolerance, category_name) VALUES ('Oak Tree', 'Uncommon', 3650, 'Medium', 'rent')`,
@@ -308,7 +308,7 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('USD', 1.35)`,
             `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('EUR', 1.45)`,
             `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('GBP', 1.70)`,
-            `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('JPY', 0.009)`, 
+            `INSERT INTO Currency (currency_code, exchange_rate) VALUES ('JPY', 0.0091)`,
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (1, 18.50, TO_DATE('07-01-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (2, 120.00, TO_DATE('07-02-2026', 'MM-DD-YYYY'), 'school', 'CAD')`,
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (3, 1450.00, TO_DATE('07-03-2026', 'MM-DD-YYYY'), 'rent', 'CAD')`,
@@ -333,16 +333,15 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code) VALUES (20, 20.00, TO_DATE('07-19-2026', 'MM-DD-YYYY'), 'eating out', 'CAD')`,
 
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (1, 'McDonalds', 'Food')`,
-            `INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (1, 'McDonalds', 1)`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (2, 'UBC Bookstore', 'Textbook')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (3, 'Westbrook Properties', 'Apartment')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (4, 'Air Canada', 'Flight')`,
             `INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (5, 'Wealthsimple', 'ETF')`,
-            `INSERT INTO Income (transaction_id, source_name, primary) VALUES (1, 'UBC Payroll', 1)`,
-            `INSERT INTO Income (transaction_id, source_name, primary) VALUES (2, 'Scholarship Office', 0)`,
-            `INSERT INTO Income (transaction_id, source_name, primary) VALUES (3, 'Freelance Client', 0)`,
-            `INSERT INTO Income (transaction_id, source_name, primary) VALUES (4, 'Investment Dividend', 0)`,
-            `INSERT INTO Income (transaction_id, source_name, primary) VALUES (5, 'Tax Refund', 0)`,
+            `INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (6, 'UBC Payroll', 1)`,
+            `INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (9, 'Scholarship Office', 0)`,
+            `INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (10, 'Freelance Client', 0)`,
+            `INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (16, 'Investment Dividend', 0)`,
+            `INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (17, 'Tax Refund', 0)`,
 
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-26-2026', 'MM-DD-YYYY'), 1, 5)`,
             `INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-27-2026', 'MM-DD-YYYY'), 2, 12)`,
@@ -369,7 +368,7 @@ async function initiateGreenhouseDB() {
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (5, 5)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 2)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 3)`,
-            `INSERT_INTO_COMPLETES_LESSON_EXTRA: INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 4)`,
+            `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 4)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (1, 5)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (2, 1)`,
             `INSERT INTO Completes_Lesson (gardener_id, lesson_id) VALUES (2, 3)`,
@@ -384,12 +383,11 @@ async function initiateGreenhouseDB() {
 
         for (const sql of statements) {
             try {
-                // Handle the slight typo comment inline if needed, or execute cleanly:
-                const cleanSql = sql.includes(': ') ? sql.split(': ')[1] : sql;
-                await connection.execute(cleanSql, [], { autoCommit: true });
+                await connection.execute(sql, [], { autoCommit: true });
             } catch (err) {
-                if (!cleanSql.startsWith('DROP')) {
-                    console.error(`Error executing: ${cleanSql}\n`, err.message);
+                // Silently ignore DROP errors if tables don't exist yet
+                if (!sql.startsWith('DROP')) {
+                    console.error(`Error executing: ${sql}\n`, err.message);
                 }
             }
         }
@@ -400,8 +398,180 @@ async function initiateGreenhouseDB() {
     });
 }
 
+// ----------------------------------------------------------
+// MILESTONE 4 QUERY FUNCTIONS
+// ----------------------------------------------------------
+
+async function insertTransaction({ id, amount, date, category, currency }) {
+    return await withOracleDB(async (connection) => {
+        await connection.execute(
+            `INSERT INTO Transaction (transaction_id, amount, transaction_date, category_name, currency_code)
+             VALUES (:id, :amount, TO_DATE(:tx_date, 'YYYY-MM-DD'), :category, :currency)`,
+            { id, amount, tx_date: date, category, currency },
+            { autoCommit: true }
+        );
+        return true;
+    }).catch((err) => {
+        console.error('Error inserting transaction:', err.message);
+        return false;
+    });
+}
+
+async function updateBudgetPlan({ plan_id, new_cap, new_rule }) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE BudgetPlan SET daily_cap = :new_cap, generated_by_rule = :new_rule WHERE plan_id = :plan_id`,
+            { plan_id, new_cap, new_rule },
+            { autoCommit: true }
+        );
+        return result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error('Error updating budget plan:', err.message);
+        return false;
+    });
+}
+
+async function deleteTransaction({ transaction_id }) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM Transaction WHERE transaction_id = :transaction_id`,
+            { transaction_id },
+            { autoCommit: true }
+        );
+        return result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error('Error deleting transaction:', err.message);
+        return false;
+    });
+}
+
+async function filterPlantSpecies({ max_days, rarity }) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT common_name, rarity, days_to_mature, drought_tolerance, category_name
+             FROM PlantSpecies
+             WHERE days_to_mature <= :max_days AND rarity = :rarity`,
+            { max_days, rarity }
+        );
+        return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+    }).catch((err) => {
+        console.error('Error filtering plant species:', err.message);
+        return { rows: [], columns: [] };
+    });
+}
+
+const GARDENER_COLUMNS = ['gardener_id', 'display_name', 'email', 'join_date', 'timezone'];
+
+async function projectGardener(columns) {
+    const safeColumns = (columns || []).filter(c => GARDENER_COLUMNS.includes(c));
+    if (safeColumns.length === 0) {
+        return { rows: [], columns: [] };
+    }
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT ${safeColumns.join(', ')} FROM Gardener`);
+        return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+    }).catch((err) => {
+        console.error('Error projecting gardener columns:', err.message);
+        return { rows: [], columns: [] };
+    });
+}
+
+async function joinSeason(season_name) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT g.display_name AS gardener_name, gd.theme AS garden_theme, s.theme_rule AS season_rule
+             FROM Gardener g
+             JOIN Garden gd ON g.gardener_id = gd.gardener_id
+             JOIN Season s ON gd.season_name = s.name
+             WHERE s.name = :season_name`,
+            { season_name }
+        );
+        return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+    }).catch((err) => {
+        console.error('Error joining gardeners by season:', err.message);
+        return { rows: [], columns: [] };
+    });
+}
+
+async function aggTotalSpent() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT category_name, SUM(amount) AS total_spent FROM Transaction GROUP BY category_name`
+        );
+        return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+    }).catch((err) => {
+        console.error('Error computing total spent by category:', err.message);
+        return { rows: [], columns: [] };
+    });
+}
+
+async function aggHaving(min_count) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT category_name, COUNT(*) AS transaction_count
+             FROM Transaction
+             GROUP BY category_name
+             HAVING COUNT(*) >= :min_count`,
+            { min_count }
+        );
+        return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+    }).catch((err) => {
+        console.error('Error computing categories by transaction count:', err.message);
+        return { rows: [], columns: [] };
+    });
+}
+
+async function aggNested() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT category_name, AVG(amount) AS avg_amount
+             FROM Transaction
+             GROUP BY category_name
+             HAVING AVG(amount) = (
+                 SELECT MAX(avg_amt) FROM (
+                     SELECT AVG(amount) AS avg_amt FROM Transaction GROUP BY category_name
+                 )
+             )`
+        );
+        return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+    }).catch((err) => {
+        console.error('Error computing highest average spending category:', err.message);
+        return { rows: [], columns: [] };
+    });
+}
+
+async function divisionDiligent() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT g.display_name AS diligent_gardener
+             FROM Gardener g
+             WHERE NOT EXISTS (
+                 SELECT l.lesson_id FROM Lesson l
+                 WHERE NOT EXISTS (
+                     SELECT 1 FROM Completes_Lesson cl
+                     WHERE cl.gardener_id = g.gardener_id AND cl.lesson_id = l.lesson_id
+                 )
+             )`
+        );
+        return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+    }).catch((err) => {
+        console.error('Error finding diligent gardeners:', err.message);
+        return { rows: [], columns: [] };
+    });
+}
+
 module.exports = {
     testOracleConnection,
     fetchFromDb,
-    initiateGreenhouseDB
+    initiateGreenhouseDB,
+    insertTransaction,
+    updateBudgetPlan,
+    deleteTransaction,
+    filterPlantSpecies,
+    projectGardener,
+    joinSeason,
+    aggTotalSpent,
+    aggHaving,
+    aggNested,
+    divisionDiligent
 };

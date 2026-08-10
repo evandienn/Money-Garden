@@ -1,15 +1,15 @@
 /*
- * These functions below are for various webpage functionalities. 
+ * These functions below are for various webpage functionalities.
  * Each function serves to process data on the frontend:
  *      - Before sending requests to the backend.
  *      - After receiving responses from the backend.
- * 
+ *
  * To tailor them to your specific needs,
- * adjust or expand these functions to match both your 
- *   backend endpoints 
- * and 
+ * adjust or expand these functions to match both your
+ *   backend endpoints
+ * and
  *   HTML structure.
- * 
+ *
  */
 
 // This function checks the database connection and updates its status on the frontend.
@@ -27,62 +27,58 @@ async function checkDbConnection() {
         statusElem.textContent = text;
     })
     .catch((error) => {
-        statusElem.textContent = 'connection timed out'; 
+        statusElem.textContent = 'connection timed out';
     });
 }
 
 
-
-
-async function fetchAndDisplay(tableName) {
-    const response = await fetch(tableName, { method: 'GET' });
-    const responseData = await response.json();
-
-    const tableContent = responseData.data;
-    const columns = responseData.columns;
-
+// Single master table used to display any tabular result on the page,
+// whether that's a raw table preview or a Milestone 4 query result.
+function renderResultsTable(title, columns, rows) {
     const tableHead = document.getElementById("previewTableHead");
     const tableBody = document.getElementById("previewTableBody");
     const tableTitle = document.getElementById("tableTitle");
 
     tableHead.innerHTML = "";
     tableBody.innerHTML = "";
+    tableTitle.textContent = title;
 
-    tableTitle.textContent = `View ${tableName}`;
-
+    if (!columns || columns.length === 0) {
+        return;
+    }
 
     const headerRow = document.createElement("tr");
-
     columns.forEach(column => {
         const th = document.createElement("th");
         th.textContent = column;
         headerRow.appendChild(th);
     });
-
-
     tableHead.appendChild(headerRow);
 
-    // Create rows
-    tableContent.forEach(row => {
+    (rows || []).forEach(row => {
         const tableRow = document.createElement("tr");
-
         row.forEach(field => {
             const cell = document.createElement("td");
-            cell.textContent = field;
+            cell.textContent = (typeof field === 'string' && field.endsWith('T00:00:00.000Z'))
+                ? field.split('T')[0]
+                : field;
             tableRow.appendChild(cell);
         });
-
         tableBody.appendChild(tableRow);
     });
+}
+
+
+async function fetchAndDisplay(tableName) {
+    const response = await fetch(tableName, { method: 'GET' });
+    const responseData = await response.json();
+    renderResultsTable(`View ${tableName}`, responseData.columns, responseData.data);
 }
 
 
 function setupDropdown() {
     const dropdown = document.getElementById("previewTables");
     dropdown.addEventListener("change", function() {
-        const selected = dropdown.value;
-        console.log("selected:", this.value);   // confirms the handler fires
-
         switch(this.value) {
             case "gardens":
                 fetchAndDisplay("gardens");
@@ -135,6 +131,15 @@ function setupDropdown() {
     })
 }
 
+// Re-fetches whatever is currently selected in the dropdown, so mutations
+// (reset, insert, update, delete) can refresh the master table in place.
+function refreshCurrentTable() {
+    const dropdown = document.getElementById("previewTables");
+    if (dropdown.value) {
+        dropdown.dispatchEvent(new Event("change"));
+    }
+}
+
 async function resetDatabase() {
     const response = await fetch("/initiate-db", { method: 'POST' });
     const responseData = await response.json();
@@ -142,11 +147,7 @@ async function resetDatabase() {
     if (responseData.success) {
         const messageElement = document.getElementById('resetResultMsg');
         messageElement.textContent = "Greenhouse database initiated successfully!";
-
-        const dropdown = document.getElementById("previewTables");
-        if (dropdown.value) {
-            dropdown.dispatchEvent(new Event("change"));
-        }
+        refreshCurrentTable();
     } else {
         alert("Error initiating database!");
     }
@@ -154,51 +155,9 @@ async function resetDatabase() {
 
 
 // -------------------------------------------------------------
-// NEW MILESTONE 4 QUERY LOGIC STARTING BELOW
+// MILESTONE 4 QUERY LOGIC
+// All query results render into the same master table via renderResultsTable().
 // -------------------------------------------------------------
-
-// --- HELPER FUNCTION TO RENDER DYNAMIC QUERY TABLES ---
-function renderDynamicTable(data, containerId, headers = []) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = ''; // Clear previous
-
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p>No results found.</p>';
-        return;
-    }
-
-    const table = document.createElement('table');
-    table.border = "1";
-    
-    if (headers.length > 0) {
-        const thead = document.createElement('thead');
-        const tr = document.createElement('tr');
-        headers.forEach(header => {
-            const th = document.createElement('th');
-            th.textContent = header;
-            tr.appendChild(th);
-        });
-        thead.appendChild(tr);
-        table.appendChild(thead);
-    }
-
-    const tbody = document.createElement('tbody');
-    data.forEach(row => {
-        const tr = document.createElement('tr');
-        row.forEach(cell => {
-            const td = document.createElement('td');
-            if (typeof cell === 'string' && cell.includes('T00:00:00.000Z')) {
-                td.textContent = cell.split('T')[0];
-            } else {
-                td.textContent = cell;
-            }
-            tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    container.appendChild(table);
-}
 
 // 1. INSERT
 async function handleInsert(e) {
@@ -216,13 +175,13 @@ async function handleInsert(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
-    
+
     const result = await response.json();
     const msgBox = document.getElementById('insertResult');
     if (result.success) {
         msgBox.textContent = "Transaction successfully inserted!";
         msgBox.style.color = "green";
-        fetchAndDisplayAllTables(); // Refresh standard tables
+        refreshCurrentTable();
     } else {
         msgBox.textContent = "Error: Invalid input or ID already exists.";
         msgBox.style.color = "red";
@@ -243,12 +202,12 @@ async function handleUpdate(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
-    
+
     const result = await response.json();
     const msgBox = document.getElementById('updateResult');
     msgBox.textContent = result.success ? "Budget Plan updated!" : "Update failed. Does the ID exist?";
     msgBox.style.color = result.success ? "green" : "red";
-    if(result.success) fetchAndDisplayAllTables();
+    if (result.success) refreshCurrentTable();
 }
 
 // 3. DELETE
@@ -261,12 +220,12 @@ async function handleDelete(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
-    
+
     const result = await response.json();
     const msgBox = document.getElementById('deleteResult');
     msgBox.textContent = result.success ? "Transaction deleted (Cascade applied)!" : "Delete failed. ID not found.";
     msgBox.style.color = result.success ? "green" : "red";
-    if(result.success) fetchAndDisplayAllTables();
+    if (result.success) refreshCurrentTable();
 }
 
 // 4. SELECTION
@@ -276,7 +235,7 @@ async function handleSelection(e) {
     const rarity = document.getElementById('selRarity').value;
     const response = await fetch(`/filter-plants?max_days=${max_days}&rarity=${rarity}`);
     const result = await response.json();
-    renderDynamicTable(result.data, 'selectResult', ['Common Name', 'Rarity', 'Days to Mature', 'Drought Tolerance', 'Category']);
+    renderResultsTable('Filtered Plant Species', result.columns, result.data);
 }
 
 // 5. PROJECTION
@@ -286,7 +245,7 @@ async function handleProjection(e) {
     const columns = Array.from(checkedBoxes).map(cb => cb.value);
 
     if (columns.length === 0) {
-        document.getElementById('projectResult').innerHTML = '<p style="color:red">Please select at least one column.</p>';
+        alert('Please select at least one column.');
         return;
     }
     const response = await fetch('/project-gardener', {
@@ -295,7 +254,7 @@ async function handleProjection(e) {
         body: JSON.stringify({ columns })
     });
     const result = await response.json();
-    renderDynamicTable(result.data, 'projectResult', columns);
+    renderResultsTable('Gardener Columns', result.columns, result.data);
 }
 
 // 6. JOIN
@@ -304,14 +263,14 @@ async function handleJoin(e) {
     const season_name = document.getElementById('joinSeason').value;
     const response = await fetch(`/join-season?season_name=${season_name}`);
     const result = await response.json();
-    renderDynamicTable(result.data, 'joinResult', ['Gardener Name', 'Garden Theme', 'Season Rule']);
+    renderResultsTable(`Gardeners in ${season_name}`, result.columns, result.data);
 }
 
 // 7. AGGREGATION
 async function handleAggregation() {
     const response = await fetch('/agg-total-spent');
     const result = await response.json();
-    renderDynamicTable(result.data, 'aggResult', ['Category', 'Total Spent']);
+    renderResultsTable('Total Spent by Category', result.columns, result.data);
 }
 
 // 8. HAVING
@@ -320,63 +279,60 @@ async function handleHaving(e) {
     const min_count = document.getElementById('havingCount').value;
     const response = await fetch(`/agg-having?min_count=${min_count}`);
     const result = await response.json();
-    renderDynamicTable(result.data, 'havingResult', ['Category', 'Transaction Count']);
+    renderResultsTable('Categories With Many Transactions', result.columns, result.data);
 }
 
 // 9. NESTED AGGREGATION
 async function handleNestedAggregation() {
     const response = await fetch('/agg-nested');
     const result = await response.json();
-    renderDynamicTable(result.data, 'nestedResult', ['Category', 'Highest Average Amount']);
+    renderResultsTable('Highest Average Spending Category', result.columns, result.data);
 }
 
 // 10. DIVISION
 async function handleDivision() {
     const response = await fetch('/division-diligent');
     const result = await response.json();
-    renderDynamicTable(result.data, 'divisionResult', ['Diligent Gardeners (Completed All Lessons)']);
+    renderResultsTable('Diligent Gardeners (Completed All Lessons)', result.columns, result.data);
 }
 
-
-// --- WINDOW ONLOAD OVERRIDE ---
 
 window.onload = function() {
     checkDbConnection();
     setupDropdown();
-    document.getElementById("resetDemotable").addEventListener("click", resetDatabase);
-
-    fetchAndDisplayAllTables();
     document.getElementById("resetDBButton").addEventListener("click", resetDatabase);
-    document.getElementById("loadGardenersButton").addEventListener("click", fetchAndDisplayAllTables);
-    
-    // Bind new query buttons (ensure these IDs exist in your index.html)
+    document.getElementById("loadGardenersButton").addEventListener("click", () => {
+        document.getElementById("previewTables").value = "gardeners";
+        fetchAndDisplay("gardeners");
+    });
+
     const insertForm = document.getElementById('insertForm');
-    if(insertForm) insertForm.addEventListener('submit', handleInsert);
+    if (insertForm) insertForm.addEventListener('submit', handleInsert);
 
     const updateForm = document.getElementById('updateForm');
-    if(updateForm) updateForm.addEventListener('submit', handleUpdate);
+    if (updateForm) updateForm.addEventListener('submit', handleUpdate);
 
     const deleteForm = document.getElementById('deleteForm');
-    if(deleteForm) deleteForm.addEventListener('submit', handleDelete);
+    if (deleteForm) deleteForm.addEventListener('submit', handleDelete);
 
     const selectForm = document.getElementById('selectForm');
-    if(selectForm) selectForm.addEventListener('submit', handleSelection);
+    if (selectForm) selectForm.addEventListener('submit', handleSelection);
 
     const projectForm = document.getElementById('projectForm');
-    if(projectForm) projectForm.addEventListener('submit', handleProjection);
+    if (projectForm) projectForm.addEventListener('submit', handleProjection);
 
     const joinForm = document.getElementById('joinForm');
-    if(joinForm) joinForm.addEventListener('submit', handleJoin);
+    if (joinForm) joinForm.addEventListener('submit', handleJoin);
 
     const aggBtn = document.getElementById('aggBtn');
-    if(aggBtn) aggBtn.addEventListener('click', handleAggregation);
+    if (aggBtn) aggBtn.addEventListener('click', handleAggregation);
 
     const havingForm = document.getElementById('havingForm');
-    if(havingForm) havingForm.addEventListener('submit', handleHaving);
+    if (havingForm) havingForm.addEventListener('submit', handleHaving);
 
     const nestedBtn = document.getElementById('nestedBtn');
-    if(nestedBtn) nestedBtn.addEventListener('click', handleNestedAggregation);
+    if (nestedBtn) nestedBtn.addEventListener('click', handleNestedAggregation);
 
     const divisionBtn = document.getElementById('divisionBtn');
-    if(divisionBtn) divisionBtn.addEventListener('click', handleDivision);
+    if (divisionBtn) divisionBtn.addEventListener('click', handleDivision);
 };

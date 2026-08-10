@@ -96,4 +96,74 @@ router.post("/initiate-db", async (req, res) => {
     }
 });
 
+// ----------------------------------------------------------
+// MILESTONE 4 QUERY ROUTES
+// ----------------------------------------------------------
+
+router.post('/insert', async (req, res) => {
+    const { id, amount, date, category, currency } = req.body;
+    const success = await appService.insertTransaction({
+        id: Number(id),
+        amount: Number(amount),
+        date,
+        category,
+        currency
+    });
+    res.json({ success });
+});
+
+router.post('/update-budget', async (req, res) => {
+    const { plan_id, new_cap, new_rule } = req.body;
+    const success = await appService.updateBudgetPlan({
+        plan_id: Number(plan_id),
+        new_cap: Number(new_cap),
+        new_rule
+    });
+    res.json({ success });
+});
+
+router.post('/delete-transaction', async (req, res) => {
+    const { transaction_id } = req.body;
+    const success = await appService.deleteTransaction({ transaction_id: Number(transaction_id) });
+    res.json({ success });
+});
+
+router.get('/filter-plants', async (req, res) => {
+    const table = await appService.filterPlantSpecies({
+        max_days: Number(req.query.max_days),
+        rarity: req.query.rarity
+    });
+    res.json({ data: table.rows, columns: table.columns });
+});
+
+router.post('/project-gardener', async (req, res) => {
+    const table = await appService.projectGardener(req.body.columns);
+    res.json({ data: table.rows, columns: table.columns });
+});
+
+router.get('/join-season', async (req, res) => {
+    const table = await appService.joinSeason(req.query.season_name);
+    res.json({ data: table.rows, columns: table.columns });
+});
+
+router.get('/agg-total-spent', async (req, res) => {
+    const table = await appService.aggTotalSpent();
+    res.json({ data: table.rows, columns: table.columns });
+});
+
+router.get('/agg-having', async (req, res) => {
+    const table = await appService.aggHaving(Number(req.query.min_count));
+    res.json({ data: table.rows, columns: table.columns });
+});
+
+router.get('/agg-nested', async (req, res) => {
+    const table = await appService.aggNested();
+    res.json({ data: table.rows, columns: table.columns });
+});
+
+router.get('/division-diligent', async (req, res) => {
+    const table = await appService.divisionDiligent();
+    res.json({ data: table.rows, columns: table.columns });
+});
+
 module.exports = router;
