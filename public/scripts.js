@@ -75,101 +75,57 @@ async function fetchAndDisplay(tableName) {
 }
 
 
-function updateTable(data, tableName) {
-    const tableHead = document.getElementById("previewTableHead");
-    const tableBody = document.getElementById("previewTableBody");
-    const tableTitle = document.getElementById("tableTitle");
-
-    tableHead.innerHTML = "";
-    tableBody.innerHTML = "";
-
-    if (data.length === 0) {
-        tableTitle.textContent = tableName;
-        return;
-    }
-
-    // Update title
-    tableTitle.textContent = `View ${tableName}`;
-
-    // Get column names
-    const columns = Object.keys(data[0]);
-
-    // Create header row
-    const headerRow = document.createElement("tr");
-
-    columns.forEach(column => {
-        const th = document.createElement("th");
-        th.textContent = column;
-        headerRow.appendChild(th);
-    });
-
-    tableHead.appendChild(headerRow);
-
-    // Create table rows
-    data.forEach(row => {
-        const tr = document.createElement("tr");
-
-        columns.forEach(column => {
-            const td = document.createElement("td");
-            td.textContent = row[column];
-            tr.appendChild(td);
-        });
-
-        tableBody.appendChild(tr);
-    });
-}
-
-
-
 function setupDropdown() {
     const dropdown = document.getElementById("previewTables");
     dropdown.addEventListener("change", function() {
         const selected = dropdown.value;
+        console.log("selected:", this.value);   // confirms the handler fires
+
         switch(this.value) {
-            case "gardens": 
-                fetchAndDisplay("gardenTable", "gardens");
+            case "gardens":
+                fetchAndDisplay("gardens");
                 break
             case "gardeners":
-                fetchAndDisplay("gardenerTable", "gardeners");
+                fetchAndDisplay("gardeners");
                 break
             case "seasons":
-                fetchAndDisplay("seasonTable", "seasons");
+                fetchAndDisplay("seasons");
                 break
             case "plantSpecies":
-                fetchAndDisplay("plantSpeciesTable", "plant_species");
+                fetchAndDisplay("plant_species");
                 break
             case "spendingCategory":
-                fetchAndDisplay("spendingCategoryTable", "spending_categories");
+                fetchAndDisplay("spending_categories");
                 break
             case "budgetPlan":
-                fetchAndDisplay("budgetPlanTable", "budget_plans");
+                fetchAndDisplay("budget_plans");
                 break
             case "lesson":
-                fetchAndDisplay("lessonTable", "lessons");
+                fetchAndDisplay("lessons");
                 break
             case "currency":
-                fetchAndDisplay("currencyTable", "currencies");
+                fetchAndDisplay("currencies");
                 break
             case "transaction":
-                fetchAndDisplay("transactionTable", "transactions");
+                fetchAndDisplay("transactions");
                 break
             case "expense":
-                fetchAndDisplay("expenseTable", "expenses");
+                fetchAndDisplay("expenses");
                 break
             case "income":
-                fetchAndDisplay("incomeTable", "incomes");
+                fetchAndDisplay("incomes");
                 break
             case "dailySummary":
-                fetchAndDisplay("dailySummaryTable", "daily_summaries");
+                fetchAndDisplay("daily_summaries");
                 break
             case "containsPlant":
-                fetchAndDisplay("containsPlantTable", "contains_plant");
+                fetchAndDisplay("contains_plant");
                 break
             case "completesLesson":
-                fetchAndDisplay("completesLessonTable", "completes_lesson");
+                fetchAndDisplay("completes_lesson");
                 break
             case "follows":
-                fetchAndDisplay("followsTable", "follows");
+                fetchAndDisplay("follows");
                 break
 
         }
@@ -184,7 +140,11 @@ async function resetDatabase() {
     if (responseData.success) {
         const messageElement = document.getElementById('resetResultMsg');
         messageElement.textContent = "Greenhouse database initiated successfully!";
-        fetchAndDisplayAllTables();
+
+        const dropdown = document.getElementById("previewTables");
+        if (dropdown.value) {
+            dropdown.dispatchEvent(new Event("change"));
+        }
     } else {
         alert("Error initiating database!");
     }
@@ -193,8 +153,8 @@ async function resetDatabase() {
 
 
 window.onload = function() {
-    
+    console.log("loaded",-1)
     checkDbConnection();
     setupDropdown();
-    document.getElementById("resetDBButton").addEventListener("click", resetDatabase);
+    document.getElementById("resetDemotable").addEventListener("click", resetDatabase);
 };
