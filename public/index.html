@@ -4,6 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Database Application</title>
+    
+    <!-- ADDED: CSS styling block to make the page look modern, clean, and user-friendly to meet Milestone 4 GUI requirements without changing your layout. -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 40px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        th {
+            background-color: #2ea44f;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f8ff;
+        }
+        button {
+            background-color: #2ea44f;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #2c974b;
+        }
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #d1d5db;
+            margin: 30px 0;
+        }
+        /* ADDED: Slightly red button for delete/reset actions to make it intuitive */
+        #resetDBButton, #deleteForm button {
+            background-color: #dc3545;
+        }
+        #resetDBButton:hover, #deleteForm button:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
     <h1>Database Connection Status: 
@@ -128,7 +200,8 @@
         <label><input type="checkbox" name="projCol" value="join_date"> Join Date</label>
         <label><input type="checkbox" name="projCol" value="timezone"> Timezone</label>
         <br>
-        <button type="submit">Project Selected Columns</button>
+        <!-- ADDED: Simple margin top to separate checkboxes from the button -->
+        <button type="submit" style="margin-top: 10px;">Project Selected Columns</button>
     </form>
 
     <br><hr><br>
