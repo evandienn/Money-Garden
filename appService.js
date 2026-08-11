@@ -102,7 +102,7 @@ async function fetchFromDb(table) {
                 command = 'SELECT transaction_id, merchant_name, asset FROM Expense';
                 break;
             case 'incomes':
-                command = 'SELECT transaction_id, source_name, primary FROM Income';
+                command = 'SELECT transaction_id, source_name, is_primary FROM Income';
                 break;
             case 'daily_summaries':
                 command = 'SELECT log_date, gardener_id, streak_count FROM DailySummary';
@@ -529,7 +529,9 @@ async function aggNested() {
              GROUP BY category_name
              HAVING AVG(amount) = (
                  SELECT MAX(avg_amt) FROM (
-                     SELECT AVG(amount) AS avg_amt FROM Transaction GROUP BY category_name
+                     SELECT AVG(amount) AS avg_amt 
+                     FROM Transaction 
+                     GROUP BY category_name
                  )
              )`
         );

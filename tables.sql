@@ -100,7 +100,7 @@ CREATE TABLE Expense (
 CREATE TABLE Income (
     transaction_id NUMBER,
     source_name VARCHAR2(100),
-    primary NUMBER(1),
+    is_primary NUMBER(1),
     PRIMARY KEY (transaction_id),
     FOREIGN KEY (transaction_id) REFERENCES Transaction (transaction_id) ON DELETE CASCADE
 );
@@ -184,11 +184,11 @@ INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (2, 'UBC Books
 INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (3, 'Westbrook Properties', 'Apartment');
 INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (4, 'Air Canada', 'Flight');
 INSERT INTO Expense (transaction_id, merchant_name, asset) VALUES (5, 'Wealthsimple', 'ETF');
-INSERT INTO Income (transaction_id, source_name, primary) VALUES (1, 'UBC Payroll', 1);
-INSERT INTO Income (transaction_id, source_name, primary) VALUES (2, 'Scholarship Office', 0);
-INSERT INTO Income (transaction_id, source_name, primary) VALUES (3, 'Freelance Client', 0);
-INSERT INTO Income (transaction_id, source_name, primary) VALUES (4, 'Investment Dividend', 0);
-INSERT INTO Income (transaction_id, source_name, primary) VALUES (5, 'Tax Refund', 0);
+INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (1, 'UBC Payroll', 1);
+INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (2, 'Scholarship Office', 0);
+INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (3, 'Freelance Client', 0);
+INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (4, 'Investment Dividend', 0);
+INSERT INTO Income (transaction_id, source_name, is_primary) VALUES (5, 'Tax Refund', 0);
 INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-26-2026', 'MM-DD-YYYY'), 1, 5);
 INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-27-2026', 'MM-DD-YYYY'), 2, 12);
 INSERT INTO DailySummary (log_date, gardener_id, streak_count) VALUES (TO_DATE('07-28-2026', 'MM-DD-YYYY'), 3, 3);
