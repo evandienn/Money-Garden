@@ -2,306 +2,178 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
-    <!-- <link rel="stylesheet" href="styles.css">   -->
-
     <title>Database Application</title>
 </head>
 <body>
-    <!-- ===================================================================================== -->
-    <!-- Display the current status of the database connection. 
-         !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
-         -->
     <h1>Database Connection Status: 
-        <!-- An in-line placeholder to display connection status. -->
         <span id="dbStatus"> </span>
-        <!-- A loading GIF, will be hided once get the status. -->
         <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
     </h1>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br><hr><br>
 
     <!-- Show 'Demotable'. 
         Data will be fetched and inserted here dynamically using JavaScript. -->
-    <h2>View Gardener TEST</h2>
-    <table id="gardenerTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>gardener_id</th>
-                <th>display_name</th>
-                <th>email</th>
-                <th>join_date</th>
-                <th>timezone</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <!-- 
+        Adding select option to preview tables
+    -->
+    <select id= "previewTables">
+        <option value=""> -- Select an option -- </option>
+        <option value="gardens"> garden</option>
+        <option value="gardeners"> gardeners</option>
+        <option value="plantSpecies"> plant species</option>
+        <option value="seasons"> seasons</option>
+        <option value="spendingCategory"> spending category</option>
+        <option value = "budgetPlan">budget plan</option>
+        <option value ="lesson">lessons</option>
+        <option value = "currency">currency</option>
+        <option value="transaction">transaction</option>
+        <option value="expense">expense</option>
+        <option value="income">income</option>
+        <option value="dailySummary"> daily summary</option>
+        <option value="containsPlant"> contains plant</option>
+        <option value="completesLesson"> completes lesson</option>
+        <option value="follows">follows</option>
+    </select>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <h2 id="tableTitle">Select a table</h2>
 
-    <h2>View Season TEST</h2>
-    <table id="seasonTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>name</th>
-                <th>start_date</th>
-                <th>end_date</th>
-                <th>theme_rule</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <table id="previewTable">
+    <thead id="previewTableHead">
+    </thead>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <tbody id="previewTableBody">
+    </tbody>
+</table>
 
-    <h2>View Garden TEST</h2>
-    <table id="gardenTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>garden_id</th>
-                <th>theme</th>
-                <th>created_on</th>
-                <th>soil_quality</th>
-                <th>gardener_id</th>
-                <th>season_name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 
-    <br><hr><br> <!-- ========================================================================= -->
 
-    <h2>View SpendingCategory TEST</h2>
-    <table id="spendingCategoryTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>category_name</th>
-                <th>icon</th>
-                <th>is_essential</th>
-                <th>garden_id</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View PlantSpecies TEST</h2>
-    <table id="plantSpeciesTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>common_name</th>
-                <th>rarity</th>
-                <th>days_to_mature</th>
-                <th>drought_tolerance</th>
-                <th>category_name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Lesson TEST</h2>
-    <table id="lessonTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>lesson_id</th>
-                <th>title</th>
-                <th>topic</th>
-                <th>difficulty</th>
-                <th>est_minutes</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Currency TEST</h2>
-    <table id="currencyTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>currency_code</th>
-                <th>exchange_rate</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Transaction TEST</h2>
-    <table id="transactionTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>transaction_id</th>
-                <th>amount</th>
-                <th>transaction_date</th>
-                <th>category_name</th>
-                <th>currency_code</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Expense TEST</h2>
-    <table id="expenseTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>transaction_id</th>
-                <th>merchant_name</th>
-                <th>asset</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Income TEST</h2>
-    <table id="incomeTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>transaction_id</th>
-                <th>source_name</th>
-                <th>primary</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View DailySummary TEST</h2>
-    <table id="dailySummaryTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>log_date</th>
-                <th>gardener_id</th>
-                <th>streak_count</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Contains_Plant TEST</h2>
-    <table id="containsPlantTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>garden_id</th>
-                <th>common_name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Completes_Lesson TEST</h2>
-    <table id="completesLessonTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>garden_id</th>
-                <th>common_name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>View Follows TEST</h2>
-    <table id="followsTable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>follower_id</th>
-                <th>followee_id</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>Reset Demotable</h2>
+    <h2>Reset Database</h2>
     <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
     <button id="resetDBButton"> reset </button> <br>
-    <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetResultMsg"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br><hr><br>
 
-    
-    <button id="loadGardenersButton">Load Gardeners</button>
+    <button id="loadGardenersButton">Load Tables</button>
 
+    <br><hr><br>
 
-    <h2> Insert Values into DemoTable </h2>
-    <form id="insertInDBForm">
-        ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
-        Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
-
-        <button type="submit"> insert </button> <br>
+    <!-- Milestone 4 Query Forms -->
+    <h2>1. Insert New Transaction</h2>
+    <form id="insertForm">
+        <input type="number" id="txId" placeholder="Transaction ID" required>
+        <input type="number" step="0.01" id="txAmt" placeholder="Amount" required>
+        <input type="date" id="txDate" required>
+        <select id="txCategory" required>
+            <option value="eating out">eating out</option>
+            <option value="school">school</option>
+            <option value="rent">rent</option>
+            <option value="travel">travel</option>
+            <option value="investment">investment</option>
+        </select>
+        <select id="txCurrency" required>
+            <option value="CAD">CAD</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="JPY">JPY</option>
+        </select>
+        <button type="submit">Insert</button>
     </form>
-    <div id="insertResultMsg"></div>
+    <div id="insertResult" style="font-weight: bold; margin-top: 10px;"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br><hr><br>
 
-    <h2>Update Name in DemoTable</h2>
-    <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
-    <form id="updateNameInDBForm">
-        Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
-        New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
-
-        <button type="submit"> update </button> <br>
+    <h2>2. Update Budget Plan</h2>
+    <form id="updateForm">
+        <input type="number" id="updPlanId" placeholder="Plan ID (1-5)" required>
+        <input type="number" step="0.01" id="updCap" placeholder="New Daily Cap" required>
+        <input type="text" id="updRule" placeholder="New Rule Description" required>
+        <button type="submit">Update</button>
     </form>
-    <!-- A placeholder to display messages related to the update operation. -->
-    <div id="updateNameResultMsg"></div>
+    <div id="updateResult" style="font-weight: bold; margin-top: 10px;"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br><hr><br>
 
-    <h2>Count the Tuples in DemoTable</h2>
-    <button id="countTuplesInDBButton"> count </button> <br><br>
-    <!-- A placeholder to display the count result. -->
-    <div id="countResultMsg"></div> <br>
+    <h2>3. Delete Transaction (Cascade)</h2>
+    <form id="deleteForm">
+        <input type="number" id="delTxId" placeholder="Transaction ID" required>
+        <button type="submit">Delete</button>
+    </form>
+    <div id="deleteResult" style="font-weight: bold; margin-top: 10px;"></div>
 
-    <!-- ===================================================================================== -->
-    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <br><hr><br>
+
+    <h2>4. Filter Plant Species (Selection: AND)</h2>
+    <form id="selectForm">
+        <input type="number" id="selMaxDays" placeholder="Max Days to Mature" required>
+        <select id="selRarity" required>
+            <option value="Common">Common</option>
+            <option value="Uncommon">Uncommon</option>
+            <option value="Rare">Rare</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <br><hr><br>
+
+    <h2>5. Custom Gardener View (Projection)</h2>
+    <form id="projectForm">
+        <label><input type="checkbox" name="projCol" value="gardener_id" checked> ID</label>
+        <label><input type="checkbox" name="projCol" value="display_name" checked> Name</label>
+        <label><input type="checkbox" name="projCol" value="email"> Email</label>
+        <label><input type="checkbox" name="projCol" value="join_date"> Join Date</label>
+        <label><input type="checkbox" name="projCol" value="timezone"> Timezone</label>
+        <br>
+        <button type="submit">Project Selected Columns</button>
+    </form>
+
+    <br><hr><br>
+
+    <h2>6. Find Gardeners by Season (Join)</h2>
+    <form id="joinForm">
+        <select id="joinSeason" required>
+            <option value="spring">Spring</option>
+            <option value="summer">Summer</option>
+            <option value="fall">Fall</option>
+            <option value="winter">Winter</option>
+        </select>
+        <button type="submit">Find Gardeners</button>
+    </form>
+
+    <br><hr><br>
+
+    <h2>7. Total Spent by Category (Aggregation)</h2>
+    <button id="aggBtn">Calculate Totals</button>
+
+    <br><hr><br>
+
+    <h2>8. Categories with Many Transactions (HAVING)</h2>
+    <form id="havingForm">
+        <input type="number" id="havingCount" placeholder="Minimum Transaction Count (e.g., 2)" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <br><hr><br>
+
+    <h2>9. Highest Average Spending Category (Nested Aggregation)</h2>
+    <button id="nestedBtn">Find Category</button>
+
+    <br><hr><br>
+
+    <h2>10. Find Diligent Gardeners (Division)</h2>
+    <p>Finds gardeners who have completed <b>all</b> available lessons.</p>
+    <button id="divisionBtn">Run Division Query</button>
+
+    <br><hr><br>
+
+    <p><i>Results for options 4–10 above appear in the master table near the top of the page.</i></p>
+
+    <br><hr><br>
+
     <script src="scripts.js"></script>
 </body>
 </html>
