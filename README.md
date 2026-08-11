@@ -68,7 +68,7 @@ category_name
 **Transaction:** transaction_id → amount, transaction_date,
 category_name, currency_code, exchange_rate
 *(pre-normalization; currency_code, exchange_rate later split into the
-Currency table above — see Milestone 3 normalization writeup)*
+Currency table above)*
 
 **Expense:** transaction_id → merchant_name, asset
 
