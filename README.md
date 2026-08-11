@@ -7,15 +7,21 @@ garden — overspend on a category and the linked plant wilts, hit your
 budget and it thrives. Friends can see each other's gardens and streaks,
 and short finance lessons unlock new seeds to plant.
 
-Proposal (ADD_LINK_HERE)
-ERD/Relations + SQL DDL Draft (ADD_LINK_HERE)
-Specifications (ADD_LINK_HERE)
+[Proposal] (ADD_LINK_HERE)
+
+[ERD/Relations + SQL DDL Draft] (ADD_LINK_HERE)
+
+[Specifications] (ADD_LINK_HERE)
 
 ## Setup
 
 See the setup guide in this repo for the `.env` / `remote-start.sh`
 instructions to run this locally or on the department server.
 
+To connect to the database
+```
+ssh -l ora_fmunsonw -L localhost:1522:dbhost.students.cs.ubc.ca:1522 remote.students.cs.ubc.ca
+```
 ## What Was Accomplished
 
 Built out the Money Garden database and a GUI on top of it covering all
@@ -25,16 +31,11 @@ with basic sanitization, error handling, and user notifications.
 
 ## Changes to Final Schema
 
-- Renamed `Income.primary` → `Income.is_primary`. The original name
-  caused the Incomes view to crash the app in practice (despite `PRIMARY`
-  not being on Oracle's strict reserved-word list). Fixed in
-  `appService.js`.
-  Fixed in both `appService.js` and `tables.sql` (the column definition
-  and all five `INSERT INTO Income` statements).
+After starting to work on the project, we renamed `Income.primary` to `Income.is_primary`. The original name caused the Incomes view to crash the app in practice, despite `PRIMARY` not being on Oracle's strict reserved-word list. This was fixed in both `appService.js` and `tables.sql` by updating the column definition and all five `INSERT INTO Income` statements.
 
 ## Scripts
 
-The script to create and populate the tables is located at `tables.sql`
+The script to create and populate the tables is located at `tables.sql`. This is a single file with DROP statements first, so it can be re-run from scratch.
 
 ## Queries
 
