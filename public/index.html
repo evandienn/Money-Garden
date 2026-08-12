@@ -179,14 +179,36 @@
 
     <br><hr><br>
 
-    <h2>4. Filter Plant Species (Selection: AND)</h2>
-    <form id="selectForm">
-        <input type="number" id="selMaxDays" placeholder="Max Days to Mature" required>
-        <select id="selRarity" required>
-            <option value="Common">Common</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Rare">Rare</option>
-        </select>
+<h2>4. Filter Plant Species (Dynamic Selection)</h2>
+    <form id="searchForm">
+        <div id="conditionsContainer">
+            <!-- First condition row -->
+            <div class="condition-row" style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-block; width: 40px;"></span> <!-- Spacer for alignment -->
+                <select class="cond-field" required>
+                    <option value="common_name">Common Name</option>
+                    <option value="rarity">Rarity</option>
+                    <option value="days_to_mature">Days to Mature</option>
+                    <option value="drought_tolerance">Drought Tolerance</option>
+                    <option value="category_name">Category Name</option>
+                </select>
+                <select class="cond-operator" required>
+                    <option value="=">=</option>
+                    <option value="!=">!=</option>
+                    <option value="<">&lt;</option>
+                    <option value=">">&gt;</option>
+                    <option value="<=">&lt;=</option>
+                    <option value=">=">&gt;=</option>
+                </select>
+                <input type="text" class="cond-value" placeholder="Value" required>
+            </div>
+        </div>
+        
+        <!-- User-friendly AND/OR buttons -->
+        <div style="margin-top: 10px; margin-bottom: 15px;">
+            <button type="button" id="addAndBtn" style="background-color: #0366d6; font-size: 13px; padding: 6px 12px; margin-right: 5px;">+ AND</button>
+            <button type="button" id="addOrBtn" style="background-color: #6f42c1; font-size: 13px; padding: 6px 12px;">+ OR</button>
+        </div>
         <button type="submit">Search</button>
     </form>
 

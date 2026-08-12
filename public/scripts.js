@@ -250,14 +250,81 @@ async function handleDelete(e) {
     if (result.success) refreshCurrentTable();
 }
 
-// 4. SELECTION
-async function handleSelection(e) {
+// 4. DYNAMIC SELECTION (Search Plants)
+function addConditionRow(connector) {
+    const container = document.getElementById('conditionsContainer');
+    const row = document.createElement('div');
+    row.className = 'condition-row';
+    row.style.marginBottom = '8px';
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.gap = '8px';
+    
+    // Visually print "AND" or "OR", but hide the actual data value for the backend
+    row.innerHTML = `
+        <span style="font-weight: bold; width: 40px; text-align: right; color: #555;">${connector}</span>
+        <input type="hidden" class="cond-connector" value="${connector}">
+        <select class="cond-field" required>
+            <option value="common_name">Common Name</option>
+            <option value="rarity">Rarity</option>
+            <option value="days_to_mature">Days to Mature</option>
+            <option value="drought_tolerance">Drought Tolerance</option>
+            <option value="category_name">Category Name</option>
+        </select>
+        <select class="cond-operator" required>
+            <option value="=">=</option>
+            <option value="!=">!=</option>
+            <option value="<">&lt;</option>
+            <option value=">">&gt;</option>
+            <option value="<=">&lt;=</option>
+            <option value=">=">&gt;=</option>
+        </select>
+        <input type="text" class="cond-value" placeholder="Value" required>
+        <button type="button" class="remove-cond-btn" style="background-color: #dc3545; padding: 6px 10px;">X</button>
+    `;
+    container.appendChild(row);
+    
+    row.querySelector('.remove-cond-btn').addEventListener('click', () => {
+        row.remove();
+    });
+}
+
+const addAndBtn = document.getElementById('addAndBtn');
+if (addAndBtn) addAndBtn.addEventListener('click', () => addConditionRow('AND'));
+
+const addOrBtn = document.getElementById('addOrBtn');
+if (addOrBtn) addOrBtn.addEventListener('click', () => addConditionRow('OR'));
+
+async function handleSearchPlants(e) {
     e.preventDefault();
-    const max_days = document.getElementById('selMaxDays').value;
-    const rarity = document.getElementById('selRarity').value;
-    const response = await fetch(`/filter-plants?max_days=${max_days}&rarity=${rarity}`);
-    const result = await response.json();
-    renderResultsTable('Filtered Plant Species', result.columns, result.data);
+    const rows = document.querySelectorAll('.condition-row');
+    const conditions = [];
+    
+    rows.forEach((row, index) => {
+        const field = row.querySelector('.cond-field').value;
+        const operator = row.querySelector('.cond-operator').value;
+        const value = row.querySelector('.cond-value').value;
+        
+        let connector = null;
+        if (index > 0) {
+            connector = row.querySelector('.cond-connector').value;
+        }
+        
+        conditions.push({ field, operator, value, connector });
+    });
+
+    try {
+        const response = await fetch('/search-plants', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ conditions })
+        });
+        const result = await response.json();
+        renderResultsTable('Filtered Plant Species', result.columns, result.data);
+    } catch (err) {
+        console.error("Search failed:", err);
+        alert("Failed to perform search. Check the terminal for errors.");
+    }
 }
 
 // 5. PROJECTION
@@ -337,8 +404,8 @@ window.onload = function() {
     const deleteForm = document.getElementById('deleteForm');
     if (deleteForm) deleteForm.addEventListener('submit', handleDelete);
 
-    const selectForm = document.getElementById('selectForm');
-    if (selectForm) selectForm.addEventListener('submit', handleSelection);
+    const searchForm = document.getElementById('searchForm');
+    if (searchForm) searchForm.addEventListener('submit', handleSearchPlants);
 
     const projectForm = document.getElementById('projectForm');
     if (projectForm) projectForm.addEventListener('submit', handleProjection);
