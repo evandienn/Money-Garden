@@ -35,7 +35,7 @@ with basic sanitization, error handling, and user notifications.
 
 After starting to work on the project, we renamed `Income.primary` to `Income.is_primary`. The original name caused the Incomes view to crash the app in practice, despite `PRIMARY` not being on Oracle's strict reserved-word list. This was fixed in both `appService.js` and `tables.sql` by updating the column definition and all five `INSERT INTO Income` statements.
 
-Currency (currency_code, exchange_rate) exists as its own table, split out from Transaction during normalization. This is consistent with M2 TA feedback noting that our original Transaction FD was incomplete and should not have assumed a separate Currency relation existed pre-normalization. See the Functional Dependencies section below and README.txt for the corrected FD.
+Currency (currency_code, exchange_rate) exists as its own table, split out from Transaction during normalization. This is consistent with M2 TA feedback noting that our original Transaction FD was incomplete and should not have assumed a separate Currency relation existed pre-normalization. See the Functional Dependencies section below for the corrected FD.
 
 ## Scripts
 
