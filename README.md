@@ -7,6 +7,8 @@ garden; overspend on a category and the linked plant wilts, hit your
 budget and it thrives. Friends can see each other's gardens and streaks,
 and short finance lessons unlock new seeds to plant.
 
+[Milestone](milestones/CPSC 304_ Milestone 4.docx - Google Docs.pdf)
+
 [Proposal](https://docs.google.com/document/d/1BEMb5QCjfTmhPcxXpCRvODozFUc4h6v6/edit?usp=sharing&ouid=114146353568543124197&rtpof=true&sd=true)
 
 [ERD/Relations/SQL](https://docs.google.com/document/d/1LoPUKN3fsiJjgPAQQljYwpy3rpKpFFq7/edit?usp=sharing&ouid=114146353568543124197&rtpof=true&sd=true)
