@@ -445,17 +445,52 @@ async function deleteTransaction({ transaction_id }) {
     });
 }
 
-async function filterPlantSpecies({ max_days, rarity }) {
+const PLANT_SEARCHABLE_FIELDS = {
+    common_name: 'STRING',
+    rarity: 'STRING',
+    days_to_mature: 'NUMBER',
+    drought_tolerance: 'STRING',
+    category_name: 'STRING'
+};
+const ALLOWED_OPERATORS = ['=', '!=', '<', '>', '<=', '>='];
+const ALLOWED_CONNECTORS = ['AND', 'OR'];
+
+async function searchPlantSpecies(conditions) {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `SELECT common_name, rarity, days_to_mature, drought_tolerance, category_name
-             FROM PlantSpecies
-             WHERE days_to_mature <= :max_days AND rarity = :rarity`,
-            { max_days, rarity }
-        );
+        // If the user clicks search without conditions, return all plants
+        if (!Array.isArray(conditions) || conditions.length === 0) {
+            const result = await connection.execute(`SELECT common_name, rarity, days_to_mature, drought_tolerance, category_name FROM PlantSpecies`);
+            return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+        }
+
+        let whereParts = [];
+        let binds = {};
+
+        conditions.forEach((cond, i) => {
+            const { field, operator, value, connector } = cond;
+            
+            // Security check against SQL injection
+            if (!PLANT_SEARCHABLE_FIELDS[field]) throw new Error(`Invalid field: ${field}`);
+            if (!ALLOWED_OPERATORS.includes(operator)) throw new Error(`Invalid operator: ${operator}`);
+            if (i > 0 && !ALLOWED_CONNECTORS.includes(connector)) throw new Error(`Invalid connector: ${connector}`);
+
+            // Bind values dynamically based on their type
+            const bindName = `v${i}`;
+            binds[bindName] = PLANT_SEARCHABLE_FIELDS[field] === 'NUMBER' ? Number(value) : value;
+
+            // Assemble the SQL string (e.g., "AND days_to_mature <= :v1")
+            whereParts.push(`${i > 0 ? ` ${connector} ` : ''}${field} ${operator} :${bindName}`);
+        });
+
+        const sql = `SELECT common_name, rarity, days_to_mature, drought_tolerance, category_name 
+                     FROM PlantSpecies 
+                     WHERE ${whereParts.join('')}`;
+                     
+        const result = await connection.execute(sql, binds);
         return { rows: result.rows, columns: result.metaData.map(c => c.name) };
+        
     }).catch((err) => {
-        console.error('Error filtering plant species:', err.message);
+        console.error('Error searching plant species:', err.message);
         return { rows: [], columns: [] };
     });
 }
@@ -569,7 +604,7 @@ module.exports = {
     insertTransaction,
     updateBudgetPlan,
     deleteTransaction,
-    filterPlantSpecies,
+    searchPlantSpecies,
     projectGardener,
     joinSeason,
     aggTotalSpent,

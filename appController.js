@@ -128,12 +128,25 @@ router.post('/delete-transaction', async (req, res) => {
     res.json({ success });
 });
 
-router.get('/filter-plants', async (req, res) => {
-    const table = await appService.filterPlantSpecies({
-        max_days: Number(req.query.max_days),
-        rarity: req.query.rarity
-    });
+router.post('/search-plants', async (req, res) => {
+    const table = await appService.searchPlantSpecies(req.body.conditions);
     res.json({ data: table.rows, columns: table.columns });
+});
+
+router.post('/project-table', async (req, res) => {
+    const { table, columns } = req.body;
+    const result = await appService.projectTable(table, columns);
+    res.json({ data: result.rows, columns: result.columns });
+});
+
+router.get('/tables', async (req, res) => {
+    const tables = await appService.listTables();
+    res.json({ tables });
+});
+
+router.get('/tables/:table/columns', async (req, res) => {
+    const columns = await appService.listColumns(req.params.table);
+    res.json({ columns });
 });
 
 router.post('/project-gardener', async (req, res) => {
