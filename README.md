@@ -29,9 +29,11 @@ ten required query categories (insert, update, delete, selection,
 projection, join, group by, having, nested aggregation, division), along
 with basic sanitization, error handling, and user notifications.
 
-## Changes to Final Schema
+## Changes to Final Schema / ERD
 
 After starting to work on the project, we renamed `Income.primary` to `Income.is_primary`. The original name caused the Incomes view to crash the app in practice, despite `PRIMARY` not being on Oracle's strict reserved-word list. This was fixed in both `appService.js` and `tables.sql` by updating the column definition and all five `INSERT INTO Income` statements.
+
+Currency (currency_code, exchange_rate) exists as its own table, split out from Transaction during normalization. This is consistent with M2 TA feedback noting that our original Transaction FD was incomplete and should not have assumed a separate Currency relation existed pre-normalization. See the Functional Dependencies section below and README.txt for the corrected FD.
 
 ## Scripts
 
@@ -65,10 +67,10 @@ category_name
 
 **Currency:** currency_code → exchange_rate
 
-**Transaction:** transaction_id → amount, transaction_date,
-category_name, currency_code, exchange_rate
-*(pre-normalization; currency_code, exchange_rate later split into the
-Currency table above)*
+**Transaction:** transaction_id → amount, transaction_date, category_name,
+currency_code
+*(currency_code is now just a FK into Currency; pre-normalization it also
+determined exchange_rate)*
 
 **Expense:** transaction_id → merchant_name, asset
 
